@@ -253,8 +253,6 @@ function JobSquareCard({ item, onContact }: { item: JSItem; onContact: (item: JS
         <div className="js-ft-meta">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span>{item.location}</span>
-          <span className="js-sep">·</span>
-          <span>{item.salary}</span>
         </div>
         <div className="js-ft-actions">
           {isLinkedin ? (
@@ -908,25 +906,25 @@ export default function JobsPage() {
                   </button>
                 )}
               </div>
-              {activeTab === 'recommend' ? (
-                <div className="jb-drop-wrap">
-                  <button className={`jb-fdrop jb-fdrop--sort${openFilter === 'sort' ? ' is-open' : ''}`}
-                    onClick={() => setOpenFilter(f => f === 'sort' ? null : 'sort')}>
-                    {SORT_LABELS[sortBy]}
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ transition: 'transform 0.2s', transform: openFilter === 'sort' ? 'rotate(180deg)' : 'none' }}><polyline points="6 9 12 15 18 9"/></svg>
-                  </button>
-                  {openFilter === 'sort' && (
-                    <div className="jb-filter-panel jb-filter-panel--right">
-                      {(['recommended', 'match', 'recent'] as const).map(v => (
+              <div className="jb-drop-wrap">
+                <button className={`jb-fdrop jb-fdrop--sort${openFilter === 'sort' ? ' is-open' : ''}`}
+                  onClick={() => setOpenFilter(f => f === 'sort' ? null : 'sort')}>
+                  {SORT_LABELS[sortBy]}
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ transition: 'transform 0.2s', transform: openFilter === 'sort' ? 'rotate(180deg)' : 'none' }}><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                {openFilter === 'sort' && (
+                  <div className="jb-filter-panel jb-filter-panel--right">
+                    {(['recommended', 'match', 'recent'] as const)
+                      .filter(v => activeTab === 'recommend' || v !== 'match')
+                      .map(v => (
                         <button key={v} className={`jb-panel-item${sortBy === v ? ' is-selected' : ''}`}
                           onClick={() => { setSortBy(v); setOpenFilter(null) }}>
                           {SORT_LABELS[v]}
                         </button>
                       ))}
-                    </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Row 2: dynamic filters per tab */}

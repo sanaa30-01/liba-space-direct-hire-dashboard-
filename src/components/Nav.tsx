@@ -31,7 +31,7 @@ export default function Nav() {
       <div className="nav-actions">
         <a href="#" className="btn btn-dark">Find Talents</a>
         <div className="nav-divider" />
-        <a href="#" className="btn btn-ghost">Login</a>
+        <a href="/jobs" className="btn btn-ghost">Login</a>
         <a href="#" className="btn btn-primary">
           Sign Up
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
