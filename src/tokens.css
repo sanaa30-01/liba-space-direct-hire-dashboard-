@@ -336,6 +336,17 @@
   --btn-font-size-m:     13px;
   --btn-font-size-l:     14px;
 
+  /* 图标按钮 — Location 筛选重置（sm / md / lg） */
+  --icon-btn-loc-reset-size-sm:    22px;
+  --icon-btn-loc-reset-size-md:    24px;
+  --icon-btn-loc-reset-size-lg:    28px;
+  --icon-btn-loc-reset-glyph-sm:   10px;
+  --icon-btn-loc-reset-glyph-md:   12px;
+  --icon-btn-loc-reset-glyph-lg:   14px;
+  --icon-btn-loc-reset-radius-sm:  6px;
+  --icon-btn-loc-reset-radius-md:  7px;
+  --icon-btn-loc-reset-radius-lg:  var(--radius-sm);
+
   /* Variant — Primary (Acid Green) */
   --btn-primary-bg:             var(--color-main-default);
   --btn-primary-color:          var(--color-text-default);

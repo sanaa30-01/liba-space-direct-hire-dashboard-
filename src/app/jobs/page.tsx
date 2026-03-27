@@ -17,9 +17,8 @@ import {
   JobSquarePostButton,
   LocationChipRemoveButton,
   LocationQuickPickButton,
+  LocationResetIconButton,
   LocationResultRowButton,
-  PanelConfirmButton,
-  PanelResetButton,
   SavedJobsButton,
   SearchClearButton,
   SortPanelItemButton,
@@ -325,6 +324,15 @@ const STATUS_META: Record<AppStatus, { label: string; cls: string }> = {
 // ── Auto Apply Panel ───────────────────────────────────────────────
 function AutoApplyPanel() {
   const [enabled, setEnabled] = useState(true)
+  const [activeFlowIndex, setActiveFlowIndex] = useState(0)
+
+  useEffect(() => {
+    if (!enabled) return
+    const timer = window.setInterval(() => {
+      setActiveFlowIndex(prev => (prev + 1) % 3)
+    }, 900)
+    return () => window.clearInterval(timer)
+  }, [enabled])
 
   return (
     <div className="aa-panel">
@@ -346,15 +354,17 @@ function AutoApplyPanel() {
           </div>
           <div className="aa-steps">
             {['Scanning', 'Matching', 'Applying'].flatMap((s, i) => {
-              const delay = i * 0.9
               const items = []
               if (i > 0) items.push(
-                <span key={`arrow-${i}`} className={`aa-step-arrow${enabled ? ' is-active' : ''}`}
-                  style={enabled ? { animationDelay: `${delay - 0.45}s` } : undefined}>›</span>
+                <span
+                  key={`arrow-${i}`}
+                  className={`aa-step-arrow${enabled && activeFlowIndex === i ? ' is-active' : ''}`}
+                >
+                  ›
+                </span>
               )
               items.push(
-                <div key={s} className={`aa-step${enabled ? ' is-active' : ''}`}
-                  style={enabled ? { animationDelay: `${delay}s` } : undefined}>
+                <div key={s} className={`aa-step${enabled && activeFlowIndex === i ? ' is-active' : ''}`}>
                   <span className="aa-step-dot" />
                   {s}
                 </div>
@@ -478,15 +488,21 @@ export default function JobsPage() {
   const [locSearch, setLocSearch] = useState('')
   const [selectedLocations, setSelectedLocations] = useState<Set<string>>(new Set())
   const [jsSignals, setJsSignals] = useState<Set<string>>(new Set())
-  const filterRef = useRef<HTMLDivElement>(null)
-
+  // 有下拉打开时：点击当前下拉「触发器 + 面板」以外任意位置则收起（含筛选项其他区域、列表等）
   useEffect(() => {
-    const h = (e: MouseEvent) => {
-      if (filterRef.current && !filterRef.current.contains(e.target as Node)) setOpenFilter(null)
+    if (openFilter === null) return
+    const onPointerDownOutside = (e: PointerEvent) => {
+      const root = document.querySelector<HTMLElement>(`[data-jb-filter-drop="${openFilter}"]`)
+      if (!root) return
+      const t = e.target
+      if (!(t instanceof Node)) return
+      const path = typeof e.composedPath === 'function' ? e.composedPath() : []
+      const inside = path.length > 0 ? path.includes(root) : root.contains(t)
+      if (!inside) setOpenFilter(null)
     }
-    document.addEventListener('mousedown', h)
-    return () => document.removeEventListener('mousedown', h)
-  }, [])
+    document.addEventListener('pointerdown', onPointerDownOutside, true)
+    return () => document.removeEventListener('pointerdown', onPointerDownOutside, true)
+  }, [openFilter])
 
   const toggleSave = (id: number) => setJobs(prev => prev.map(j => j.id === id ? { ...j, saved: !j.saved } : j))
   const toggleMode = (m: string) => setWorkModes(prev => {
@@ -614,7 +630,7 @@ export default function JobsPage() {
           <main className="jb-main">
             {/* 固定筛选 + 仅列表滚动 */}
             <div className="jb-list">
-          <div className="jb-filters" ref={filterRef}>
+          <div className="jb-filters">
             {/* Row 1: Search + Sort dropdown */}
             <div className="jb-filter-row1">
               <div className={`jb-search${searchQuery ? ' is-filled' : ''}`}>
@@ -624,7 +640,7 @@ export default function JobsPage() {
                   <SearchClearButton onClick={() => setSearchQuery('')} />
                 )}
               </div>
-              <div className="jb-drop-wrap">
+              <div className="jb-drop-wrap" data-jb-filter-drop="sort">
                 <FilterDropdownButton
                   open={openFilter === 'sort'}
                   onClick={() => setOpenFilter(f => f === 'sort' ? null : 'sort')}
@@ -650,7 +666,7 @@ export default function JobsPage() {
             {activeTab === 'recommend' ? (
               <div className="jb-filter-row2">
                 {/* Work Mode dropdown */}
-                <div className="jb-drop-wrap">
+                <div className="jb-drop-wrap" data-jb-filter-drop="workmode">
                   <FilterDropdownButton
                     open={openFilter === 'workmode'}
                     active={workModes.size > 0}
@@ -666,16 +682,13 @@ export default function JobsPage() {
                           {label}
                         </FilterPanelOptionButton>
                       ))}
-                      <div className="jb-panel-footer jb-panel-footer--single">
-                        <PanelConfirmButton onClick={() => setOpenFilter(null)} />
-                      </div>
                     </div>
                   )}
                 </div>
                 <div className="jb-filter-sep" />
 
                 {/* Job Type dropdown */}
-                <div className="jb-drop-wrap">
+                <div className="jb-drop-wrap" data-jb-filter-drop="jobtype">
                   <FilterDropdownButton
                     open={openFilter === 'jobtype'}
                     active={jobTypes.size > 0}
@@ -691,15 +704,12 @@ export default function JobsPage() {
                           {t}
                         </FilterPanelOptionButton>
                       ))}
-                      <div className="jb-panel-footer jb-panel-footer--single">
-                        <PanelConfirmButton onClick={() => setOpenFilter(null)} />
-                      </div>
                     </div>
                   )}
                 </div>
 
                 {/* Level dropdown */}
-                <div className="jb-drop-wrap">
+                <div className="jb-drop-wrap" data-jb-filter-drop="level">
                   <FilterDropdownButton
                     open={openFilter === 'level'}
                     active={levels.size > 0}
@@ -715,15 +725,12 @@ export default function JobsPage() {
                           {l}
                         </FilterPanelOptionButton>
                       ))}
-                      <div className="jb-panel-footer jb-panel-footer--single">
-                        <PanelConfirmButton onClick={() => setOpenFilter(null)} />
-                      </div>
                     </div>
                   )}
                 </div>
 
                 {/* Location dropdown */}
-                <div className="jb-drop-wrap">
+                <div className="jb-drop-wrap" data-jb-filter-drop="location">
                   <FilterDropdownButton
                     open={openFilter === 'location'}
                     active={selectedLocations.size > 0}
@@ -734,7 +741,10 @@ export default function JobsPage() {
                   {openFilter === 'location' && (
                     <div className="jb-filter-panel jb-filter-panel--loc jb-filter-panel--right">
                       {/* Quick pick */}
-                      <p className="jb-panel-label">Quick pick</p>
+                      <div className="jb-panel-label-row">
+                        <p className="jb-panel-label">Quick pick</p>
+                        <LocationResetIconButton onClick={() => { setSelectedLocations(new Set()); setLocSearch('') }} />
+                      </div>
                       <div className="jb-loc-quick">
                         {LOC_QUICK.map(r => (
                           <LocationQuickPickButton key={r} active={selectedLocations.has(r)} onClick={() => toggleLocation(r)}>
@@ -779,11 +789,6 @@ export default function JobsPage() {
                         )}
                       </div>
 
-                      {/* Footer */}
-                      <div className="jb-panel-footer">
-                        <PanelResetButton onClick={() => { setSelectedLocations(new Set()); setLocSearch('') }} />
-                        <PanelConfirmButton onClick={() => setOpenFilter(null)} />
-                      </div>
                     </div>
                   )}
                 </div>
@@ -805,7 +810,7 @@ export default function JobsPage() {
             ) : (
               <div className="jb-filter-row2">
                 {/* Signal dropdown */}
-                <div className="jb-drop-wrap">
+                <div className="jb-drop-wrap" data-jb-filter-drop="signal">
                   <FilterDropdownButton
                     open={openFilter === 'signal'}
                     active={jsSignals.size > 0}
@@ -821,15 +826,12 @@ export default function JobsPage() {
                           {s}
                         </FilterPanelOptionButton>
                       ))}
-                      <div className="jb-panel-footer jb-panel-footer--single">
-                        <PanelConfirmButton onClick={() => setOpenFilter(null)} />
-                      </div>
                     </div>
                   )}
                 </div>
 
                 {/* Location dropdown — same panel as Recommend Jobs */}
-                <div className="jb-drop-wrap">
+                <div className="jb-drop-wrap" data-jb-filter-drop="js-location">
                   <FilterDropdownButton
                     open={openFilter === 'js-location'}
                     active={selectedLocations.size > 0}
@@ -839,7 +841,10 @@ export default function JobsPage() {
                   </FilterDropdownButton>
                   {openFilter === 'js-location' && (
                     <div className="jb-filter-panel jb-filter-panel--loc">
-                      <p className="jb-panel-label">Quick pick</p>
+                      <div className="jb-panel-label-row">
+                        <p className="jb-panel-label">Quick pick</p>
+                        <LocationResetIconButton onClick={() => { setSelectedLocations(new Set()); setLocSearch('') }} />
+                      </div>
                       <div className="jb-loc-quick">
                         {LOC_QUICK.map(r => (
                           <LocationQuickPickButton key={r} active={selectedLocations.has(r)} onClick={() => toggleLocation(r)}>
@@ -870,10 +875,6 @@ export default function JobsPage() {
                             ))}
                           </div>
                         )}
-                      </div>
-                      <div className="jb-panel-footer">
-                        <PanelResetButton onClick={() => { setSelectedLocations(new Set()); setLocSearch('') }} />
-                        <PanelConfirmButton onClick={() => setOpenFilter(null)} />
                       </div>
                     </div>
                   )}
