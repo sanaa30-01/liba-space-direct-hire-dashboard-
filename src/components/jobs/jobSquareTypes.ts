@@ -10,6 +10,7 @@ export type JSItem = {
   companyColor: string
   role: string
   signal: { kind: SignalKind; label: string; sub: string }
+  /** 展示格式与 JobCard 一致：美国 City, ST；国际 City, Region, Country；多点用「 / 」分隔 */
   location: string
   salary: string
   posted: string

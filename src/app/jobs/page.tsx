@@ -4,7 +4,7 @@ import JobCard from '@/components/jobs/JobCard'
 import FloatingNovaChat from '@/components/FloatingNovaChat'
 import JobSquareCard from '@/components/jobs/JobSquareCard'
 import type { Job } from '@/components/jobs/types'
-import { SIGNAL_META, type JSItem } from '@/components/jobs/jobSquareTypes'
+import type { JSItem } from '@/components/jobs/jobSquareTypes'
 import {
   AlertCtaButton,
   AutoApplyToggleButton,
@@ -21,8 +21,6 @@ import {
   LocationResultRowButton,
   SavedJobsButton,
   SearchClearButton,
-  SortPanelItemButton,
-  SourcePillButton,
   TopAvatarButton,
   TogglePillButton,
   UpgradeButton,
@@ -36,7 +34,8 @@ import {
   SlidersHorizontal,
   HandCoins,
   ChartNoAxesColumn,
-  Settings
+  Settings,
+  LogOut
 } from 'lucide-react'
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -63,12 +62,13 @@ const AUTO_APPS: AutoApp[] = [
   { id: 5, title: 'Full Stack Dev', company: 'Railway', companyColor: '#7b2bf9', status: 'applied', date: '22m ago', salary: '$100k–$130k' },
 ]
 
+/** Direct hire 地点与 Recommend Jobs 一致：美国为 City, ST；国际为 City, Region, Country；多地点用「 / 」 */
 const JOB_SQUARE: JSItem[] = [
-  { id: 1, source: 'linkedin', manager: { name: 'Sarah Chen', title: 'Head of Engineering', initials: 'SC', color: '#ddd6fe' }, company: 'Agency AI', companyInitials: 'A', companyColor: '#7c3aed', role: 'Founding AI Engineer', signal: { kind: 'founding', label: 'Founding', sub: '$200K–$280K + Equity' }, location: 'Remote', salary: '$200K–$260K', posted: '2d ago' },
-  { id: 2, source: 'linkedin', manager: { name: 'David Kim', title: 'Head of Research', initials: 'DK', color: '#bfdbfe' }, company: 'Cognition', companyInitials: 'C', companyColor: '#2563eb', role: 'Sr. Research Scientist', signal: { kind: 'hiring-fast', label: 'Hiring Fast', sub: 'Leading 6th new projects' }, location: 'SF Bay Area', salary: '$200K + Equity', posted: '1w ago' },
-  { id: 3, source: 'platform', manager: { name: 'Emily Nguyen', title: 'Head of ML', initials: 'EN', color: '#fde68a' }, company: 'Zoox', companyInitials: 'Z', companyColor: '#d97706', role: 'ML Infrastructure Lead', signal: { kind: 'new-team', label: 'New Team', sub: 'Building fast, 5 engineers' }, location: 'Foster City', salary: '$650K+', posted: '3d ago' },
-  { id: 4, source: 'platform', manager: { name: 'Jessica Lee', title: 'Head of Product', initials: 'JL', color: '#bbf7d0' }, company: 'Barrios A2I', companyInitials: 'B', companyColor: '#16a34a', role: 'AI Product Manager', signal: { kind: 'expansion', label: 'Expansion', sub: 'Updating to new markets' }, location: 'NYC', salary: '$280K + Equity', posted: '4d ago' },
-  { id: 5, source: 'linkedin', manager: { name: 'Alex Rivera', title: 'Head of Data', initials: 'AR', color: '#e0e7ff' }, company: 'Robust.AI', companyInitials: 'R', companyColor: '#4f46e5', role: 'Lead Data Scientist', signal: { kind: 'founding', label: 'Founding', sub: 'Replacing key engineer' }, location: 'SF Bay Area', salary: '$200K + Equity', posted: 'Today' },
+  { id: 1, source: 'linkedin', manager: { name: 'Sarah Chen', title: 'Head of Engineering', initials: 'SC', color: '#ddd6fe' }, company: 'Agency AI', companyInitials: 'A', companyColor: '#7c3aed', role: 'Founding AI Engineer', signal: { kind: 'founding', label: 'Founding', sub: '$200K–$280K + Equity' }, location: 'San Francisco, CA', salary: '$200K–$260K', posted: '2d ago' },
+  { id: 2, source: 'linkedin', manager: { name: 'David Kim', title: 'Head of Research', initials: 'DK', color: '#bfdbfe' }, company: 'Cognition', companyInitials: 'C', companyColor: '#2563eb', role: 'Sr. Research Scientist', signal: { kind: 'hiring-fast', label: 'Hiring Fast', sub: 'Leading 6th new projects' }, location: 'Palo Alto, CA / London, England, UK', salary: '$200K + Equity', posted: '1w ago' },
+  { id: 3, source: 'platform', manager: { name: 'Emily Nguyen', title: 'Head of ML', initials: 'EN', color: '#fde68a' }, company: 'Zoox', companyInitials: 'Z', companyColor: '#d97706', role: 'ML Infrastructure Lead', signal: { kind: 'new-team', label: 'New Team', sub: 'Building fast, 5 engineers' }, location: 'Foster City, CA', salary: '$650K+', posted: '3d ago' },
+  { id: 4, source: 'platform', manager: { name: 'Jessica Lee', title: 'Head of Product', initials: 'JL', color: '#bbf7d0' }, company: 'Barrios A2I', companyInitials: 'B', companyColor: '#16a34a', role: 'AI Product Manager', signal: { kind: 'expansion', label: 'Expansion', sub: 'Updating to new markets' }, location: 'New York, NY', salary: '$280K + Equity', posted: '4d ago' },
+  { id: 5, source: 'linkedin', manager: { name: 'Alex Rivera', title: 'Head of Data', initials: 'AR', color: '#e0e7ff' }, company: 'Robust.AI', companyInitials: 'R', companyColor: '#4f46e5', role: 'Lead Data Scientist', signal: { kind: 'founding', label: 'Founding', sub: 'Replacing key engineer' }, location: 'Berlin, Berlin, Germany', salary: '$200K + Equity', posted: 'Today' },
 ]
 
 // ── Contact modal ────────────────────────────────────────────────────
@@ -106,7 +106,6 @@ function ContactModal({ item, onClose }: { item: JSItem; onClose: () => void }) 
   const [copied, setCopied]     = useState(false)
   const overlayRef              = useRef<HTMLDivElement>(null)
   const messages                = buildMessages(item)
-  const sig                     = SIGNAL_META[item.signal.kind]
 
   useEffect(() => {
     const fullMsg = messages[variant % messages.length]
@@ -173,8 +172,6 @@ function ContactModal({ item, onClose }: { item: JSItem; onClose: () => void }) 
         {/* Job chip */}
         <div className="cm-job-chip">
           <span className="cm-job-role">{item.role}</span>
-          <span className="cm-chip-sep">·</span>
-          <span className="cm-signal-tag" style={{ background: sig.bg, color: sig.color }}>{sig.emoji} {item.signal.label}</span>
         </div>
 
         {/* Message */}
@@ -259,7 +256,6 @@ function JobSquarePanel() {
             <div className="jsq-resp-item">
               <span className="jsq-resp-src jsq-resp-src--platform">Platform</span>
               <strong className="jsq-resp-val">~12h</strong>
-              <span className="jsq-resp-tag">Faster</span>
             </div>
             <div className="jsq-resp-divider" />
             <div className="jsq-resp-item">
@@ -278,7 +274,6 @@ function JobSquarePanel() {
                 <span className="jsq-co-av" style={{ background: c.color + '22', color: c.color }}>{c.initials}</span>
                 <span className="jsq-co-name">{c.name}</span>
                 <span className="jsq-co-roles">{c.roles} role{c.roles > 1 ? 's' : ''}</span>
-                <span className={`jsq-co-src jsq-co-src--${c.source}`}>{c.source === 'linkedin' ? 'LinkedIn' : 'Platform'}</span>
               </div>
             ))}
           </div>
@@ -289,8 +284,9 @@ function JobSquarePanel() {
   )
 }
 
-// ── Figma icon assets (node 8-2884) ────────────────────────────────
-const FIG_LOGO          = 'https://www.figma.com/api/mcp/asset/9d629858-9234-493d-9671-3f1d3dec7396'
+// ── Logo assets (same as landing page) ──────────────────────────────
+const FIG_LOGO_ICON = '/img/nav/logo_icon.png'
+const FIG_LOGO_WORDMARK = '/img/nav/logo_wordmark.png'
 
 // ── Sidebar nav ────────────────────────────────────────────────────
 const NAV_MAIN = [
@@ -304,6 +300,7 @@ const NAV_USER_MENU = [
   { label: 'Refer & Affiliate', icon: <HandCoins size={18} strokeWidth={1.9} /> },
   { label: 'Usage',             icon: <ChartNoAxesColumn size={18} strokeWidth={1.9} /> },
   { label: 'Setting',           icon: <Settings size={18} strokeWidth={1.9} /> },
+  { label: 'Log out',           icon: <LogOut size={18} strokeWidth={1.9} /> },
 ]
 
 // ── Helpers ────────────────────────────────────────────────────────
@@ -321,10 +318,114 @@ const STATUS_META: Record<AppStatus, { label: string; cls: string }> = {
   applied: { label: 'Applied', cls: 'aa-s--applied' },
 }
 
+// ── Auto Apply Settings ────────────────────────────────────────────
+type AAJobType = 'Full-time' | 'Part-time' | 'Contract' | 'Internship'
+type AASettings = {
+  dailyLimit: number
+  jobTypes: AAJobType[]
+  minSalary: number
+  autoCoverLetter: boolean
+  notifyOnApply: boolean
+  verifiedOnly: boolean
+}
+const DEFAULT_AA_SETTINGS: AASettings = {
+  dailyLimit: 20,
+  jobTypes: ['Full-time', 'Contract'],
+  minSalary: 80,
+  autoCoverLetter: true,
+  notifyOnApply: true,
+  verifiedOnly: false,
+}
+const JOB_TYPE_OPTIONS: AAJobType[] = ['Full-time', 'Part-time', 'Contract', 'Internship']
+
+function AutoApplySettingsPanel({ onClose }: { onClose: () => void }) {
+  const [settings, setSettings] = useState<AASettings>(DEFAULT_AA_SETTINGS)
+
+  function toggleJobType(t: AAJobType) {
+    setSettings(s => ({
+      ...s,
+      jobTypes: s.jobTypes.includes(t) ? s.jobTypes.filter(x => x !== t) : [...s.jobTypes, t],
+    }))
+  }
+  function toggleBool(key: keyof AASettings) {
+    setSettings(s => ({ ...s, [key]: !s[key] }))
+  }
+
+  return (
+    <div className="aa-settings-overlay">
+      <div className="aa-settings-hd">
+        <span className="aa-settings-title">Auto Apply Settings</span>
+        <button className="aa-settings-close" onClick={onClose} aria-label="Close settings">
+          <Settings size={14} strokeWidth={2} />
+        </button>
+      </div>
+      <div className="aa-settings-body">
+        {/* Daily limit */}
+        <div className="aa-sf">
+          <label className="aa-sf-label">Daily apply limit</label>
+          <div className="aa-sf-stepper">
+            <button className="aa-stepper-btn" onClick={() => setSettings(s => ({ ...s, dailyLimit: Math.max(1, s.dailyLimit - 5) }))}>−</button>
+            <span className="aa-stepper-val">{settings.dailyLimit}</span>
+            <button className="aa-stepper-btn" onClick={() => setSettings(s => ({ ...s, dailyLimit: Math.min(100, s.dailyLimit + 5) }))}>+</button>
+          </div>
+        </div>
+
+        {/* Job types */}
+        <div className="aa-sf">
+          <label className="aa-sf-label">Job type</label>
+          <div className="aa-sf-chips">
+            {JOB_TYPE_OPTIONS.map(t => (
+              <button
+                key={t}
+                className={`aa-sf-chip${settings.jobTypes.includes(t) ? ' is-on' : ''}`}
+                onClick={() => toggleJobType(t)}
+              >{t}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Min salary */}
+        <div className="aa-sf">
+          <label className="aa-sf-label">Min salary <span className="aa-sf-unit">(K / yr)</span></label>
+          <div className="aa-sf-stepper">
+            <button className="aa-stepper-btn" onClick={() => setSettings(s => ({ ...s, minSalary: Math.max(0, s.minSalary - 10) }))}>−</button>
+            <span className="aa-stepper-val">${settings.minSalary}K</span>
+            <button className="aa-stepper-btn" onClick={() => setSettings(s => ({ ...s, minSalary: Math.min(500, s.minSalary + 10) }))}>+</button>
+          </div>
+        </div>
+
+        {/* Toggles */}
+        <div className="aa-sf aa-sf--toggle">
+          <label className="aa-sf-label">Auto cover letter</label>
+          <button className={`aa-toggle${settings.autoCoverLetter ? ' is-on' : ''}`} onClick={() => toggleBool('autoCoverLetter')} aria-label="Toggle auto cover letter">
+            <span className="aa-toggle-knob" />
+          </button>
+        </div>
+        <div className="aa-sf aa-sf--toggle">
+          <label className="aa-sf-label">Notify on each apply</label>
+          <button className={`aa-toggle${settings.notifyOnApply ? ' is-on' : ''}`} onClick={() => toggleBool('notifyOnApply')} aria-label="Toggle notify on apply">
+            <span className="aa-toggle-knob" />
+          </button>
+        </div>
+        <div className="aa-sf aa-sf--toggle">
+          <label className="aa-sf-label">Verified listings only</label>
+          <button className={`aa-toggle${settings.verifiedOnly ? ' is-on' : ''}`} onClick={() => toggleBool('verifiedOnly')} aria-label="Toggle verified only">
+            <span className="aa-toggle-knob" />
+          </button>
+        </div>
+      </div>
+      <div className="aa-settings-footer">
+        <button className="aa-settings-save" onClick={onClose}>Save</button>
+      </div>
+    </div>
+  )
+}
+
 // ── Auto Apply Panel ───────────────────────────────────────────────
 function AutoApplyPanel() {
   const [enabled, setEnabled] = useState(true)
   const [activeFlowIndex, setActiveFlowIndex] = useState(0)
+  const [showSettings, setShowSettings] = useState(false)
 
   useEffect(() => {
     if (!enabled) return
@@ -336,6 +437,7 @@ function AutoApplyPanel() {
 
   return (
     <div className="aa-panel">
+      {showSettings && <AutoApplySettingsPanel onClose={() => setShowSettings(false)} />}
       <div className="aa-top-card">
         {/* Header */}
         <div className="aa-hd">
@@ -343,7 +445,12 @@ function AutoApplyPanel() {
             <Bot size={18} strokeWidth={2} />
             <span className="aa-hd-title">Auto Apply</span>
           </div>
-          <AutoApplyToggleButton enabled={enabled} onToggle={() => setEnabled(v => !v)} />
+          <div className="aa-hd-right">
+            <button className="aa-settings-btn" onClick={() => setShowSettings(true)} aria-label="Auto Apply settings">
+              <Settings size={15} strokeWidth={1.8} />
+            </button>
+            <AutoApplyToggleButton enabled={enabled} onToggle={() => setEnabled(v => !v)} />
+          </div>
         </div>
 
         {/* Live status */}
@@ -476,18 +583,14 @@ export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [jobs, setJobs] = useState(JOBS)
   const [workModes, setWorkModes] = useState<Set<string>>(new Set())
-  const [sources, setSources] = useState<Set<string>>(new Set())
   const [referralOnly, setReferralOnly] = useState(false)
   const [manualOnly, setManualOnly] = useState(false)
-  const [sortBy, setSortBy] = useState<'recommended' | 'match' | 'recent'>('recommended')
-  const [jsSortBy, setJsSortBy] = useState<'recommended' | 'recent'>('recommended')
   const [contactItem, setContactItem] = useState<JSItem | null>(null)
   const [openFilter, setOpenFilter] = useState<string | null>(null)
   const [jobTypes, setJobTypes] = useState<Set<string>>(new Set())
   const [levels, setLevels] = useState<Set<string>>(new Set())
   const [locSearch, setLocSearch] = useState('')
   const [selectedLocations, setSelectedLocations] = useState<Set<string>>(new Set())
-  const [jsSignals, setJsSignals] = useState<Set<string>>(new Set())
   // 有下拉打开时：点击当前下拉「触发器 + 面板」以外任意位置则收起（含筛选项其他区域、列表等）
   useEffect(() => {
     if (openFilter === null) return
@@ -508,9 +611,6 @@ export default function JobsPage() {
   const toggleMode = (m: string) => setWorkModes(prev => {
     const next = new Set(prev); next.has(m) ? next.delete(m) : next.add(m); return next
   })
-  const toggleSource = (s: string) => setSources(prev => {
-    const next = new Set(prev); next.has(s) ? next.delete(s) : next.add(s); return next
-  })
   const toggleJobType = (t: string) => setJobTypes(prev => {
     const n = new Set(prev); n.has(t) ? n.delete(t) : n.add(t); return n
   })
@@ -520,11 +620,6 @@ export default function JobsPage() {
   const toggleLocation = (loc: string) => setSelectedLocations(prev => {
     const n = new Set(prev); n.has(loc) ? n.delete(loc) : n.add(loc); return n
   })
-  const toggleJsSignal = (s: string) => setJsSignals(prev => {
-    const n = new Set(prev); n.has(s) ? n.delete(s) : n.add(s); return n
-  })
-
-  const SORT_LABELS: Record<string, string> = { recommended: 'Recommended', match: 'Top matched', recent: 'Most recent' }
 
   return (
     <div className="jb-layout">
@@ -532,7 +627,8 @@ export default function JobsPage() {
       {/* Sidebar */}
       <aside className="jb-sidebar">
         <div className="jb-brand">
-          <img src={FIG_LOGO} alt="JobNova" width={116} height={32} style={{ objectFit: 'contain' }} />
+          <img className="nav-brand-icon" src={FIG_LOGO_ICON} alt="JobNova icon" />
+          <img className="nav-brand-wordmark" src={FIG_LOGO_WORDMARK} alt="JobNova" />
         </div>
         <nav className="jb-nav">
           {NAV_MAIN.map(item => (
@@ -561,7 +657,19 @@ export default function JobsPage() {
           </div>
           {userMenuOpen && (
             <div className="jb-user-menu">
-              {NAV_USER_MENU.map(item => (
+              {NAV_USER_MENU.map(item => item.label === 'Log out' ? (
+                <button
+                  key={item.label}
+                  className="jb-user-menu-item"
+                  onClick={() => {
+                    setUserMenuOpen(false)
+                    window.location.href = '/'
+                  }}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </button>
+              ) : (
                 <a key={item.label} href="#" className="jb-user-menu-item">
                   {item.icon}
                   <span>{item.label}</span>
@@ -588,7 +696,7 @@ export default function JobsPage() {
                   <HeaderTabButton
                     active={activeTab === 'square'}
                     onClick={() => setActiveTab('square')}
-                    label="Job Square"
+                    label="Direct hire"
                   />
                 </div>
                 <SavedJobsButton />
@@ -631,7 +739,7 @@ export default function JobsPage() {
             {/* 固定筛选 + 仅列表滚动 */}
             <div className="jb-list">
           <div className="jb-filters">
-            {/* Row 1: Search + Sort dropdown */}
+            {/* Row 1: 搜索 + Location（原排序按钮位置） */}
             <div className="jb-filter-row1">
               <div className={`jb-search${searchQuery ? ' is-filled' : ''}`}>
                 <svg className="jb-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -640,30 +748,69 @@ export default function JobsPage() {
                   <SearchClearButton onClick={() => setSearchQuery('')} />
                 )}
               </div>
-              <div className="jb-drop-wrap" data-jb-filter-drop="sort">
+              <div className="jb-drop-wrap" data-jb-filter-drop="location">
                 <FilterDropdownButton
-                  open={openFilter === 'sort'}
-                  onClick={() => setOpenFilter(f => f === 'sort' ? null : 'sort')}
+                  open={openFilter === 'location'}
+                  active={selectedLocations.size > 0}
+                  onClick={() => setOpenFilter(f => f === 'location' ? null : 'location')}
                   className="jb-fdrop--sort"
                 >
-                  {SORT_LABELS[sortBy]}
+                  {fdropLabel(selectedLocations, 'Location')}
                 </FilterDropdownButton>
-                {openFilter === 'sort' && (
-                  <div className="jb-filter-panel jb-filter-panel--right">
-                    {(['recommended', 'match', 'recent'] as const)
-                      .filter(v => activeTab === 'recommend' || v !== 'match')
-                      .map(v => (
-                        <SortPanelItemButton key={v} selected={sortBy === v} onClick={() => { setSortBy(v); setOpenFilter(null) }}>
-                          {SORT_LABELS[v]}
-                        </SortPanelItemButton>
+                {openFilter === 'location' && (
+                  <div className="jb-filter-panel jb-filter-panel--loc jb-filter-panel--right">
+                    <div className="jb-panel-label-row">
+                      <p className="jb-panel-label">Quick pick</p>
+                      <LocationResetIconButton onClick={() => { setSelectedLocations(new Set()); setLocSearch('') }} />
+                    </div>
+                    <div className="jb-loc-quick">
+                      {LOC_QUICK.map(r => (
+                        <LocationQuickPickButton key={r} active={selectedLocations.has(r)} onClick={() => toggleLocation(r)}>
+                          {r}
+                        </LocationQuickPickButton>
                       ))}
+                    </div>
+                    <div className="jb-loc-combobox">
+                      <div className="jb-loc-input-area">
+                        {Array.from(selectedLocations).map(loc => (
+                          <span key={loc} className="jb-loc-inline-chip">
+                            {loc}
+                            <LocationChipRemoveButton onClick={e => { e.stopPropagation(); toggleLocation(loc) }} />
+                          </span>
+                        ))}
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--color-text-second-2)', flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input
+                          className="jb-loc-text-input"
+                          placeholder={selectedLocations.size === 0 ? 'Search city or country…' : ''}
+                          value={locSearch}
+                          onChange={e => setLocSearch(e.target.value)}
+                        />
+                        {locSearch && (
+                          <SearchClearButton onClick={() => setLocSearch('')} className="jb-loc-searchbox-clear" />
+                        )}
+                      </div>
+                      {locSearch && (
+                        <div className="jb-loc-dropdown">
+                          {LOC_ALL.filter(c => c.toLowerCase().includes(locSearch.toLowerCase())).map(city => (
+                            <LocationResultRowButton key={city} selected={selectedLocations.has(city)} onClick={() => { toggleLocation(city); setLocSearch('') }}>
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                              {city}
+                              {selectedLocations.has(city) && <svg className="jb-loc-check" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                            </LocationResultRowButton>
+                          ))}
+                          {LOC_ALL.filter(c => c.toLowerCase().includes(locSearch.toLowerCase())).length === 0 && (
+                            <p className="jb-loc-no-results">No cities found</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Row 2: dynamic filters per tab */}
-            {activeTab === 'recommend' ? (
+            {/* Row 2: Recommend Jobs 专属筛选（Location 已移至首行右侧） */}
+            {activeTab === 'recommend' && (
               <div className="jb-filter-row2">
                 {/* Work Mode dropdown */}
                 <div className="jb-drop-wrap" data-jb-filter-drop="workmode">
@@ -729,70 +876,6 @@ export default function JobsPage() {
                   )}
                 </div>
 
-                {/* Location dropdown */}
-                <div className="jb-drop-wrap" data-jb-filter-drop="location">
-                  <FilterDropdownButton
-                    open={openFilter === 'location'}
-                    active={selectedLocations.size > 0}
-                    onClick={() => setOpenFilter(f => f === 'location' ? null : 'location')}
-                  >
-                    {fdropLabel(selectedLocations, 'Location')}
-                  </FilterDropdownButton>
-                  {openFilter === 'location' && (
-                    <div className="jb-filter-panel jb-filter-panel--loc jb-filter-panel--right">
-                      {/* Quick pick */}
-                      <div className="jb-panel-label-row">
-                        <p className="jb-panel-label">Quick pick</p>
-                        <LocationResetIconButton onClick={() => { setSelectedLocations(new Set()); setLocSearch('') }} />
-                      </div>
-                      <div className="jb-loc-quick">
-                        {LOC_QUICK.map(r => (
-                          <LocationQuickPickButton key={r} active={selectedLocations.has(r)} onClick={() => toggleLocation(r)}>
-                            {r}
-                          </LocationQuickPickButton>
-                        ))}
-                      </div>
-
-                      {/* Combobox: chips inside input + floating results dropdown */}
-                      <div className="jb-loc-combobox">
-                        <div className="jb-loc-input-area">
-                          {Array.from(selectedLocations).map(loc => (
-                            <span key={loc} className="jb-loc-inline-chip">
-                              {loc}
-                              <LocationChipRemoveButton onClick={e => { e.stopPropagation(); toggleLocation(loc) }} />
-                            </span>
-                          ))}
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--color-text-second-2)', flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                          <input
-                            className="jb-loc-text-input"
-                            placeholder={selectedLocations.size === 0 ? 'Search city or country…' : ''}
-                            value={locSearch}
-                            onChange={e => setLocSearch(e.target.value)}
-                          />
-                          {locSearch && (
-                            <SearchClearButton onClick={() => setLocSearch('')} className="jb-loc-searchbox-clear" />
-                          )}
-                        </div>
-                        {locSearch && (
-                          <div className="jb-loc-dropdown">
-                            {LOC_ALL.filter(c => c.toLowerCase().includes(locSearch.toLowerCase())).map(city => (
-                              <LocationResultRowButton key={city} selected={selectedLocations.has(city)} onClick={() => { toggleLocation(city); setLocSearch('') }}>
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                {city}
-                                {selectedLocations.has(city) && <svg className="jb-loc-check" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
-                              </LocationResultRowButton>
-                            ))}
-                            {LOC_ALL.filter(c => c.toLowerCase().includes(locSearch.toLowerCase())).length === 0 && (
-                              <p className="jb-loc-no-results">No cities found</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                    </div>
-                  )}
-                </div>
-
                 <TogglePillButton
                   active={manualOnly}
                   onClick={() => setManualOnly(v => !v)}
@@ -806,85 +889,6 @@ export default function JobsPage() {
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                   Referral only
                 </TogglePillButton>
-              </div>
-            ) : (
-              <div className="jb-filter-row2">
-                {/* Signal dropdown */}
-                <div className="jb-drop-wrap" data-jb-filter-drop="signal">
-                  <FilterDropdownButton
-                    open={openFilter === 'signal'}
-                    active={jsSignals.size > 0}
-                    onClick={() => setOpenFilter(f => f === 'signal' ? null : 'signal')}
-                  >
-                    {fdropLabel(jsSignals, 'Signal')}
-                  </FilterDropdownButton>
-                  {openFilter === 'signal' && (
-                    <div className="jb-filter-panel">
-                      <p className="jb-panel-label">Signal</p>
-                      {['Founding', 'Hiring Fast', 'New Team', 'Expansion'].map(s => (
-                        <FilterPanelOptionButton key={s} selected={jsSignals.has(s)} onClick={() => toggleJsSignal(s)}>
-                          {s}
-                        </FilterPanelOptionButton>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Location dropdown — same panel as Recommend Jobs */}
-                <div className="jb-drop-wrap" data-jb-filter-drop="js-location">
-                  <FilterDropdownButton
-                    open={openFilter === 'js-location'}
-                    active={selectedLocations.size > 0}
-                    onClick={() => setOpenFilter(f => f === 'js-location' ? null : 'js-location')}
-                  >
-                    {fdropLabel(selectedLocations, 'Location')}
-                  </FilterDropdownButton>
-                  {openFilter === 'js-location' && (
-                    <div className="jb-filter-panel jb-filter-panel--loc">
-                      <div className="jb-panel-label-row">
-                        <p className="jb-panel-label">Quick pick</p>
-                        <LocationResetIconButton onClick={() => { setSelectedLocations(new Set()); setLocSearch('') }} />
-                      </div>
-                      <div className="jb-loc-quick">
-                        {LOC_QUICK.map(r => (
-                          <LocationQuickPickButton key={r} active={selectedLocations.has(r)} onClick={() => toggleLocation(r)}>
-                            {r}
-                          </LocationQuickPickButton>
-                        ))}
-                      </div>
-                      <div className="jb-loc-combobox">
-                        <div className="jb-loc-input-area">
-                          {Array.from(selectedLocations).map(loc => (
-                            <span key={loc} className="jb-loc-inline-chip">
-                              {loc}
-                              <LocationChipRemoveButton onClick={e => { e.stopPropagation(); toggleLocation(loc) }} />
-                            </span>
-                          ))}
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--color-text-second-2)', flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                          <input className="jb-loc-text-input" placeholder={selectedLocations.size === 0 ? 'Search city or country…' : ''} value={locSearch} onChange={e => setLocSearch(e.target.value)} />
-                          {locSearch && <SearchClearButton onClick={() => setLocSearch('')} className="jb-loc-searchbox-clear" />}
-                        </div>
-                        {locSearch && (
-                          <div className="jb-loc-dropdown">
-                            {LOC_ALL.filter(c => c.toLowerCase().includes(locSearch.toLowerCase())).map(city => (
-                              <LocationResultRowButton key={city} selected={selectedLocations.has(city)} onClick={() => { toggleLocation(city); setLocSearch('') }}>
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                {city}
-                                {selectedLocations.has(city) && <svg className="jb-loc-check" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
-                              </LocationResultRowButton>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, flexShrink: 0 }}>
-                  {([['LinkedIn', 'linkedin'], ['Platform', 'platform']] as const).map(([label, key]) => (
-                    <SourcePillButton key={key} active={sources.has(key)} onClick={() => toggleSource(key)} label={label} />
-                  ))}
-                </div>
               </div>
             )}
           </div>

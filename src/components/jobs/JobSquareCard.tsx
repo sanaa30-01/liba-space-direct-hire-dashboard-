@@ -1,4 +1,4 @@
-import { SIGNAL_META, type JSItem } from './jobSquareTypes'
+import type { JSItem } from './jobSquareTypes'
 
 type JobSquareCardProps = {
   item: JSItem
@@ -6,7 +6,6 @@ type JobSquareCardProps = {
 }
 
 export default function JobSquareCard({ item, onContact }: JobSquareCardProps) {
-  const sig = SIGNAL_META[item.signal.kind]
   const isLinkedin = item.source === 'linkedin'
 
   return (
@@ -21,24 +20,22 @@ export default function JobSquareCard({ item, onContact }: JobSquareCardProps) {
             <p className="js-manager-title">{item.manager.title}</p>
           </div>
         </div>
-        <div className="js-signal" style={{ background: sig.bg, color: sig.color }}>
-          <span>{sig.emoji}</span>
-          <span>{item.signal.label}</span>
-        </div>
         <span className="js-posted">{item.posted}</span>
       </div>
 
       <div className="js-card-mid">
         <div className="js-job-info">
           <p className="js-role">{item.role}</p>
-          <p className="js-company">{item.company} · {item.signal.sub}</p>
+          <p className="js-company">{item.company}</p>
         </div>
       </div>
 
       <div className="js-card-ft">
-        <div className="js-ft-meta">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>{item.location}</span>
+        <div className="jb-loc-row js-card-ft-loc">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span className="jb-loc">{item.location}</span>
         </div>
         <div className="js-ft-actions">
           {isLinkedin ? (

@@ -30,7 +30,7 @@ export default function Features() {
           {/* Feature 2: AI Agent Support */}
           <div className="feature-card feature-card--dark scroll-fade">
             <div className="feature-icon feature-icon--lime">
-              <svg width="24" height="24" fill="none" stroke="#ffffff" viewBox="0 0 24 24">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M13 10V3L4 14h7v7l9-11h-7z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
               </svg>
             </div>
@@ -59,12 +59,12 @@ export default function Features() {
             </p>
           </div>
 
-          {/* Feature 4: AI Auto Apply — Figma node 47-2262 */}
+          {/* Feature 4: AI Auto Apply — Figma node 47-2265 */}
           <div className="feature-card feature-card--auto-apply scroll-fade">
             <div className="auto-apply-grid">
               <div className="auto-apply-content">
                 <div className="auto-apply-icon">
-                  <img src="https://www.figma.com/api/mcp/asset/b76fb64e-f50b-4b6a-8a15-bcca9dfe76c2" alt="" />
+                  <img src="/img/features/auto_apply_icon.svg" alt="" />
                 </div>
                 <h3 className="feature-title">AI Auto Apply</h3>
                 <p className="feature-body">

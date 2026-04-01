@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react'
 
+const NAV_LOGO_ICON = '/img/nav/logo_icon.png'
+const NAV_LOGO_WORDMARK = '/img/nav/logo_wordmark.png'
+
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
 
@@ -14,8 +17,8 @@ export default function Nav() {
   return (
     <nav className={`nav${scrolled ? ' scrolled' : ''}`} id="nav">
       <a href="#" className="nav-brand">
-        <img className="nav-brand-icon" src="https://www.figma.com/api/mcp/asset/0c7ae1e1-6e4f-4a8b-8597-c341068d47db" alt="JobNova icon" />
-        <img className="nav-brand-wordmark" src="https://www.figma.com/api/mcp/asset/89e4c1ed-11f4-4c0a-9a31-c1e65a721332" alt="JobNova" />
+        <img className="nav-brand-icon" src={NAV_LOGO_ICON} alt="JobNova icon" />
+        <img className="nav-brand-wordmark" src={NAV_LOGO_WORDMARK} alt="JobNova" />
       </a>
 
       <div className="nav-tabs">

@@ -41,7 +41,7 @@
   --palette-white:      #ffffff;
 
   /* Surface / Background */
-  --palette-surface:    #ffffff;
+  --palette-surface:    var(--palette-white);   /* alias — identical to white */
   --palette-surface-muted:  #f4f4f5;
   --palette-surface-subtle: #fafafa;
   --palette-bg:         #f9fafb;
@@ -86,9 +86,8 @@
   ───────────────────────────────────────── */
 
   /* ── Color / Brand ────────────────────── */
-  --color-main-default:   var(--palette-lime-400);   /* primary accent */
-  --color-main-border:    #e8e9f0;                   /* subtle border   */
-  --color-main-disable:   #e7e8e9;                   /* disabled state  */
+  --color-main-default:   var(--palette-lime-400);      /* primary accent */
+  --color-main-disable:   var(--palette-gray-100);      /* disabled state  */
 
   /* ── Color / Surface ──────────────────── */
   --color-surface:        var(--palette-surface);        /* card / panel bg         */
@@ -113,7 +112,6 @@
 
   /* ── Color / Secondary (Indigo) ──────── */
   --color-secondary-text:    var(--palette-indigo-500);  /* indigo labels     */
-  --color-secondary-color:   #edf2ff;                    /* indigo bg surface */
   --color-secondary-default: var(--palette-indigo-400);  /* indigo default    */
   --color-secondary-icon-bg: rgba(99, 102, 241, 0.10);   /* indigo icon bg    */
 
@@ -162,8 +160,7 @@
   /* ── Color / UI Grays (inputs / search) ─ */
   --color-ui-placeholder: #ccccd0;
   --color-ui-gray1:        #474646;
-  --color-ui-gray3:        #787675;
-  --color-ui-black:        #151614;
+  --color-ui-gray3:        var(--palette-gray-500);    /* alias — same value     */
   --color-ui-border:       var(--palette-gray-200);    /* input border default  */
   --color-ui-border-focus: #b0b2c0;                    /* input border focus    */
   --color-ui-border-filled:#c4c6d2;                    /* input border filled   */
@@ -173,11 +170,45 @@
   --color-border-light:   rgba(255, 255, 255, 0.64);
   --color-border-default: #e8e9f0;
 
+  /* ── Color / Alpha whites (on dark surfaces) ── */
+  --color-white-alpha-72: rgba(255, 255, 255, 0.72);   /* frosted glass bg       */
+  --color-white-alpha-60: rgba(255, 255, 255, 0.60);   /* muted text on dark     */
+  --color-white-alpha-55: rgba(255, 255, 255, 0.55);   /* subtle text on dark    */
+  --color-white-alpha-50: rgba(255, 255, 255, 0.50);   /* stat tile bg           */
+  --color-white-alpha-40: rgba(255, 255, 255, 0.40);   /* dim label on dark      */
+  --color-white-alpha-32: rgba(255, 255, 255, 0.32);   /* shimmer / divider      */
+  --color-white-alpha-18: rgba(255, 255, 255, 0.18);   /* hover on dark surface  */
+  --color-white-alpha-12: rgba(255, 255, 255, 0.12);   /* icon bg on dark        */
+  --color-white-alpha-10: rgba(255, 255, 255, 0.10);   /* subtle dark overlay    */
+
+  /* ── Color / Alpha darks (on light surfaces) ── */
+  --color-dark-alpha-65:  rgba(13, 13, 13, 0.65);     /* body text on light     */
+  --color-dark-alpha-55:  rgba(13, 13, 13, 0.55);     /* secondary text on lime */
+  --color-dark-alpha-45:  rgba(13, 13, 13, 0.45);     /* muted text on lime     */
+  /* --color-dark-alpha-08 merged into --color-overlay-08 (visually identical) */
+
+  /* ── Color / Black overlays ───────────── */
+  --color-overlay-03:     rgba(0, 0, 0, 0.03);        /* alert warn bg           */
+  --color-overlay-05:     rgba(0, 0, 0, 0.05);        /* alert error bg          */
+  --color-overlay-08:     rgba(0, 0, 0, 0.08);        /* ghost active / badge bg */
+  --color-overlay-12:     rgba(21, 22, 20, 0.12);     /* seg count on active tab */
+  --color-overlay-32:     rgba(0, 0, 0, 0.32);        /* modal backdrop          */
+
+  /* ── Color / Live ring ────────────────── */
+  --color-live-ring:      rgba(34, 197, 94, 0.25);    /* online pulse ring      */
+
   /* ── Color / Brand Green Tints ────────── */
-  --color-main-tint-xs:  rgba(173, 245, 0, 0.06);   /* nav item hover         */
+  --color-main-tint-xs:  rgba(173, 245, 0,  0.06);   /* nav item hover         */
   --color-main-tint-sm:  rgba(176, 249, 14, 0.12);   /* nav item active / chip */
   --color-main-tint-md:  rgba(176, 249, 14, 0.18);   /* JS sort active bg      */
   --color-main-tint-glow:rgba(176, 248, 9,  0.07);   /* feature glow           */
+
+  /* ── Color / Brand Green Alpha (animations) ── */
+  --color-main-alpha-15: rgba(176, 248, 9,  0.15);   /* nova av bg             */
+  --color-main-alpha-20: rgba(176, 249, 14, 0.20);   /* pulse glow mid         */
+  --color-main-alpha-25: rgba(176, 249, 14, 0.25);   /* pulse glow             */
+  --color-main-alpha-30: rgba(176, 248, 9,  0.30);   /* nova av border / ring  */
+  --color-main-alpha-35: rgba(176, 249, 14, 0.35);   /* pulse ring strong      */
 
 
   /* ─────────────────────────────────────────
@@ -202,6 +233,20 @@
   --shadow-sm:   0 2px 18px rgba(0, 0, 0, 0.05);
   --shadow-md:   0 8px 48px rgba(0, 0, 0, 0.08);
   --shadow-xl:   0 24px 80px rgba(0, 0, 0, 0.13);
+
+  /* Contextual shadows */
+  --shadow-xs:         0 1px 4px rgba(0, 0, 0, 0.15);        /* sort item active, toggle knob */
+  --shadow-chip:       0 1px 3px rgba(0, 0, 0, 0.06);        /* floating chip */
+  --shadow-tab:        0 2px 12px rgba(0, 0, 0, 0.07);       /* active tab/toggle */
+  --shadow-btn-hover:  0 6px 18px rgba(9, 9, 11, 0.20);      /* button hover lift */
+  --shadow-hover-card: 0 16px 40px rgba(0, 0, 0, 0.08);      /* card hover elevation */
+  --shadow-fab:        0 4px 20px rgba(9, 9, 11, 0.30);      /* floating action button */
+  --shadow-fab-hover:  0 6px 28px rgba(9, 9, 11, 0.35);      /* FAB hover */
+  --shadow-dropdown:   0 14px 40px rgba(9, 9, 11, 0.12), 0 3px 12px rgba(9, 9, 11, 0.07);
+  --shadow-panel:      0 10px 28px rgba(9, 9, 11, 0.10), 0 2px 8px rgba(9, 9, 11, 0.06);
+  --shadow-float:      0 1px 2px rgba(15, 23, 42, 0.03), 0 6px 14px rgba(15, 23, 42, 0.06), 0 14px 24px rgba(15, 23, 42, 0.05);
+  --shadow-nova:       0 16px 64px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-modal:      0 24px 60px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.08);
 
 
   /* ─────────────────────────────────────────
@@ -242,9 +287,7 @@
   --text-body-weight:      500;
   --text-body-line-height: 20px;
 
-  --text-body-light-size:        14px;
-  --text-body-light-weight:      400;
-  --text-body-light-line-height: 20px;
+  --text-body-light-weight:      400;   /* lighter variant of --text-body; size/lh shared */
 
   --text-body-large-size:        20px;
   --text-body-large-weight:      500;
@@ -265,10 +308,6 @@
   --text-hint-line-height: 15px;
 
   /* Body — Inter */
-  --text-inter-16-size:        16px;
-  --text-inter-16-weight:      400;
-  --text-inter-16-line-height: 1.5;
-
   --text-inter-base-size:        16px;
   --text-inter-base-weight:      400;
   --text-inter-base-line-height: 24px;
@@ -316,6 +355,8 @@
   ───────────────────────────────────────── */
   --gradient-highlight: linear-gradient(104.68deg, #B0F90E 7.76%, #7BFFB4 98.83%);
   --gradient-hero-glow: radial-gradient(ellipse at 60% 40%, rgba(176,248,9,0.18) 0%, transparent 70%);
+  --gradient-shimmer:   linear-gradient(90deg, transparent 0%, var(--color-white-alpha-32) 50%, transparent 100%);
+  --gradient-stream-glow: linear-gradient(to top, var(--color-main-tint-sm), transparent);
 
 
   /* ─────────────────────────────────────────
