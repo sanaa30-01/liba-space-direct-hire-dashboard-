@@ -13,7 +13,8 @@ import {
   ChartNoAxesColumn,
   Settings,
   CreditCard,
-  LogOut
+  LogOut,
+  Sparkles
 } from 'lucide-react'
 
 type Billing = 'monthly' | 'quarterly'
@@ -176,7 +177,7 @@ export default function SubscribtionPage() {
         <div className="sub-page">
           <div className="sub-header">
             <div>
-              <p className="sub-kicker">Billing & Plan</p>
+              <p className="sub-kicker">Subscribtion</p>
               <h1 className="sub-title">
                 We've got a plan that's <span className="text-accent-underline">Perfect</span> for you
               </h1>
@@ -187,7 +188,6 @@ export default function SubscribtionPage() {
 
           <div className="sub-plans-head">
             <div>
-              <h3>Available plans</h3>
               <p className="sub-trial-note">
                 Start with <span className="sub-trial-pill">3-days free trial</span>
               </p>
@@ -211,7 +211,12 @@ export default function SubscribtionPage() {
           <div className="sub-plan-grid">
             {AVAILABLE_PLANS.map(plan => (
               <article key={plan.name} className={`plan-card${plan.popular ? ' plan-card--featured' : ''}`}>
-                {plan.popular && <div className="plan-popular">⚡ Most Popular{billing === 'quarterly' ? ' (Save 38%)' : ''}</div>}
+                {plan.popular && (
+                  <div className="plan-popular">
+                    <Sparkles size={12} strokeWidth={2.2} />
+                    <span>Most Popular{billing === 'quarterly' ? ' (Save 38%)' : ''}</span>
+                  </div>
+                )}
                 {plan.badge && billing === 'quarterly' && <span className="plan-badge">{plan.badge}</span>}
 
                 <div className="sub-plan-name-row">

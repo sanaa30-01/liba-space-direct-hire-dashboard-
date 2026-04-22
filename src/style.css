@@ -840,7 +840,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   padding: 4px;
   background: var(--color-bg-neutral);
   border-radius: var(--radius-full);
-  margin-bottom: var(--space-16);
+  margin-bottom: var(--space-10);
 }
 .toggle-btn {
   display: inline-flex;
@@ -885,18 +885,19 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .pricing .section-header--center + .pricing-toggle { /* already centered */ }
 .pricing-trial-note {
   margin-top: var(--space-4);
-  font-size: 16px;
-  font-weight: 500;
+  font-size: var(--text-body-large-size);
+  line-height: var(--text-body-large-line-height);
+  font-weight: var(--text-body-large-weight);
   color: var(--color-text-second);
 }
 .pricing-trial-pill {
   display: inline-flex;
   align-items: center;
-  padding: 5px 11px;
+  padding: 6px 12px;
   margin-left: 6px;
   border-radius: var(--radius-full);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--text-inter-base-size);
+  font-weight: var(--text-btn-s-weight);
   color: var(--color-text-green-dark);
   background: var(--color-main-tint-sm);
   line-height: 1;
@@ -938,6 +939,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   top: -16px;
   left: 50%;
   transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--gradient-highlight);
   color: var(--color-text-default);
   border-radius: var(--radius-full);
@@ -3666,7 +3670,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .sub-plans-head {
   margin-top: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3984,18 +3988,19 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .sub-trial-note {
   margin-top: 10px;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: var(--text-body-large-size);
+  line-height: var(--text-body-large-line-height);
+  font-weight: var(--text-body-large-weight);
   color: var(--color-text-second);
 }
 .sub-trial-pill {
   display: inline-flex;
   align-items: center;
   margin-left: 6px;
-  padding: 4px 10px;
+  padding: 5px 11px;
   border-radius: var(--radius-full);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--text-inter-base-size);
+  font-weight: var(--text-btn-s-weight);
   line-height: 1;
   color: var(--color-text-green-dark);
   background: var(--color-main-tint-sm);

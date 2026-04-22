@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Sparkles } from 'lucide-react'
 
 type Billing = 'monthly' | 'quarterly'
 
@@ -94,7 +95,8 @@ export default function Pricing() {
             >
               {plan.popular && (
                 <div className="plan-popular">
-                  ⚡ Most Popular{billing === 'quarterly' ? ' (Save 38%)' : ''}
+                  <Sparkles size={12} strokeWidth={2.2} />
+                  <span>Most Popular{billing === 'quarterly' ? ' (Save 38%)' : ''}</span>
                 </div>
               )}
               {plan.badge && billing === 'quarterly' && <span className="plan-badge">{plan.badge}</span>}
