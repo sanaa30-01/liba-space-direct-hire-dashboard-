@@ -429,6 +429,33 @@ function AutoApplyPanel() {
   const [enabled, setEnabled] = useState(true)
   const [activeFlowIndex, setActiveFlowIndex] = useState(0)
   const [showSettings, setShowSettings] = useState(false)
+  const [showStartModal, setShowStartModal] = useState(false)
+  const [skipStartReminder, setSkipStartReminder] = useState(false)
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem('aa_skip_start_reminder')
+    if (saved === '1') setSkipStartReminder(true)
+  }, [])
+
+  const handleSkipReminderChange = (checked: boolean) => {
+    setSkipStartReminder(checked)
+    if (checked) {
+      window.localStorage.setItem('aa_skip_start_reminder', '1')
+    } else {
+      window.localStorage.removeItem('aa_skip_start_reminder')
+    }
+  }
+
+  // 仅在用户从关闭切换到开启时弹窗，避免初始化时打扰
+  const handleToggleAutoApply = () => {
+    setEnabled(prev => {
+      const next = !prev
+      if (!prev && next && !skipStartReminder) {
+        setShowStartModal(true)
+      }
+      return next
+    })
+  }
 
   useEffect(() => {
     if (!enabled) return
@@ -441,6 +468,43 @@ function AutoApplyPanel() {
   return (
     <div className="aa-panel">
       {showSettings && <AutoApplySettingsPanel onClose={() => setShowSettings(false)} />}
+      {showStartModal && (
+        <div className="aa-start-overlay" onClick={() => setShowStartModal(false)}>
+          <div className="aa-start-modal" role="dialog" aria-modal="true" aria-label="Auto Apply started" onClick={e => e.stopPropagation()}>
+            <button className="aa-start-close" type="button" onClick={() => setShowStartModal(false)} aria-label="Close">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <div className="aa-start-anim" aria-hidden="true">
+              <span className="aa-start-anim-icon-wrap">
+                <img
+                  className="aa-start-anim-icon"
+                  src="/img/resume-portfolio-svgrepo-com%201.svg"
+                  alt=""
+                />
+                <span className="aa-start-upload-badge">⬆</span>
+              </span>
+            </div>
+            <p className="aa-start-title">Auto Apply is now running</p>
+            <p className="aa-start-desc">
+              Our AI agent is working hard to apply for you, so you can leave and have a coffee.
+            </p>
+            <button className="aa-start-cta" onClick={() => setShowStartModal(false)}>
+              Nice
+            </button>
+            <label className="aa-start-remind-toggle">
+              <input
+                type="checkbox"
+                checked={skipStartReminder}
+                onChange={(e) => handleSkipReminderChange(e.target.checked)}
+              />
+              <span>Don't remind me again</span>
+            </label>
+          </div>
+        </div>
+      )}
       <div className="aa-top-card">
         {/* Header */}
         <div className="aa-hd">
@@ -452,7 +516,7 @@ function AutoApplyPanel() {
             <button className="aa-settings-btn" onClick={() => setShowSettings(true)} aria-label="Auto Apply settings">
               <Settings size={15} strokeWidth={1.8} />
             </button>
-            <AutoApplyToggleButton enabled={enabled} onToggle={() => setEnabled(v => !v)} />
+            <AutoApplyToggleButton enabled={enabled} onToggle={handleToggleAutoApply} />
           </div>
         </div>
 
@@ -509,14 +573,14 @@ function AutoApplyPanel() {
         <AlertCtaButton>Upgrade</AlertCtaButton>
       </div>
 
-      <div className="aa-live-card">
+      <div className="aa-live-card" id="autoapply">
         {/* Live Workspace */}
         <div className="aa-list-hd">
           <div className="aa-list-hd-left">
             <span className={`aa-pulse${enabled ? ' is-live' : ''}`} style={{ width: 7, height: 7 }} />
             <span className="aa-list-title">Live Workspace</span>
           </div>
-          <span className="aa-list-count">{AUTO_APPS.length}</span>
+          <a href="/jobs#autoapply" className="aa-list-count">View all</a>
         </div>
         <div className="aa-list">
           {AUTO_APPS.map((app, i) => {
@@ -632,10 +696,10 @@ export default function JobsPage() {
 
       {/* Sidebar */}
       <aside className="jb-sidebar">
-        <div className="jb-brand">
+        <a className="jb-brand" href="/">
           <img className="nav-brand-icon" src={FIG_LOGO_ICON} alt="JobNova icon" />
           <img className="nav-brand-wordmark" src={FIG_LOGO_WORDMARK} alt="JobNova" />
-        </div>
+        </a>
         <nav className="jb-nav">
           {NAV_MAIN.map(item => (
             <a key={item.label} href="#" className={`jb-nav-item${item.active ? ' is-active' : ''} ${item.fontClass}`}>
