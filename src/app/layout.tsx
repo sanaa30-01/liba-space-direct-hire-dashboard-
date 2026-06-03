@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import '../tokens.css'
 import '../style.css'
+import '../agent-workstation.css'
+import '../resume-workstation.css'
+import '../auto-apply-workstation.css'
 
 export const metadata: Metadata = {
   title: 'JobNova — AI Career Intelligence',

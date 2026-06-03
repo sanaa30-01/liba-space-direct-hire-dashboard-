@@ -1,0 +1,401 @@
+/**
+ * Resume auto-tailor feature preview
+ */
+
+.resume-tool-root {
+  background: linear-gradient(180deg, var(--color-surface-muted) 0%, var(--color-surface) 42%);
+}
+
+.resume-tool__frame {
+  width: 100%;
+  max-width: 520px;
+  flex: 1;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-float);
+  padding: clamp(12px, 2.5vw, 18px);
+  position: relative;
+  min-height: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+.resume-tool__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  flex-shrink: 0;
+}
+
+.resume-tool__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-second-2);
+}
+
+.resume-tool__ats {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--color-text-second-2);
+}
+
+.resume-tool__ats.is-ready {
+  color: var(--color-text-green-dark);
+}
+
+.resume-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: clamp(12px, 2vw, 16px);
+  position: relative;
+  min-height: 240px;
+}
+
+.resume-panel__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.resume-panel__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-default);
+}
+
+.resume-panel__title svg {
+  color: var(--color-text-green-dark);
+  flex-shrink: 0;
+}
+
+.resume-panel__meta {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--color-text-second-2);
+  white-space: nowrap;
+}
+
+.resume-panel__meta--spark {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--color-text-second);
+}
+
+/* Job description */
+.resume-jd__text {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--color-text-second);
+  margin: 0;
+}
+
+.resume-jd__text mark {
+  background: var(--color-main-default);
+  color: var(--color-text-default);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-weight: inherit;
+}
+
+.resume-jd__scan-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 36px;
+  margin-top: var(--space-2);
+}
+
+.resume-jd__scan-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-main-default);
+  box-shadow: 0 0 14px var(--color-main-default);
+  border-radius: var(--radius-full);
+  will-change: top;
+}
+
+.resume-jd__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
+}
+
+.resume-jd__pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-main-tint-sm);
+  color: var(--color-text-green-dark);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.resume-jd__pill.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Resume PDF panel */
+.resume-panel--pdf {
+  min-height: 260px;
+}
+
+.resume-pdf__header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--space-2);
+}
+
+.resume-pdf__header strong {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-text-default);
+  letter-spacing: -0.02em;
+}
+
+.resume-pdf__header span {
+  font-size: 12px;
+  color: var(--color-text-second);
+}
+
+.resume-pdf__section-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-second-2);
+  margin: 0 0 var(--space-2);
+}
+
+.resume-pdf__bullets {
+  margin: 0;
+  padding-left: 1.1em;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-second);
+}
+
+.resume-pdf__bullets mark {
+  background: var(--color-main-default);
+  color: var(--color-text-default);
+  padding: 0 3px;
+  border-radius: 3px;
+  font-weight: inherit;
+}
+
+.resume-pdf__reformat {
+  margin: auto 0 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-full);
+  background: var(--color-main-tint-sm);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-green-dark);
+  text-align: center;
+  animation: resume-fade-in 0.35s ease;
+}
+
+/* ATS panel */
+.resume-panel--ats {
+  min-height: 280px;
+  padding-bottom: 48px;
+}
+
+.resume-ats__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.resume-ats__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-default);
+}
+
+.resume-ats__pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-second);
+  font-variant-numeric: tabular-nums;
+}
+
+.resume-ats__bar {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+}
+
+.resume-ats__bar-fill {
+  height: 100%;
+  background: var(--color-main-default);
+  border-radius: var(--radius-full);
+  transition: width 0.15s linear;
+}
+
+.resume-ats__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resume-ats__list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-second-2);
+  transition: color 0.2s ease;
+}
+
+.resume-ats__list li.is-pass {
+  color: var(--color-text-default);
+}
+
+.resume-ats__check {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border-default);
+  flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.resume-ats__list li.is-pass .resume-ats__check {
+  border-color: var(--color-main-default);
+  background: var(--color-main-default);
+  box-shadow: inset 0 0 0 2px var(--color-surface);
+}
+
+.resume-ats__pass {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-main-default);
+  background: var(--color-main-tint-sm);
+  animation: resume-fade-in 0.35s ease;
+}
+
+.resume-ats__pass strong {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-default);
+}
+
+.resume-ats__pass span {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-second);
+  margin-top: 2px;
+}
+
+.resume-ats__shield {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-text-default);
+  color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.resume-ats__submit {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  padding: 10px 22px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-main-default);
+  color: var(--color-text-default);
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: var(--shadow-tab);
+  transition: transform 0.12s ease;
+  pointer-events: none;
+}
+
+.resume-ats__submit.is-pressed {
+  transform: scale(0.94);
+}
+
+.resume-tool__dots .advocate__dot.is-done {
+  background: var(--color-main-default);
+  opacity: 0.55;
+}
+
+.resume-tool__dots .advocate__dot.is-active {
+  opacity: 1;
+}
+
+@keyframes resume-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .resume-tool__frame {
+    max-width: 100%;
+  }
+
+  .resume-panel {
+    min-height: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resume-jd__scan-beam,
+  .resume-pdf__reformat,
+  .resume-ats__pass {
+    animation: none !important;
+    transition: none !important;
+  }
+}

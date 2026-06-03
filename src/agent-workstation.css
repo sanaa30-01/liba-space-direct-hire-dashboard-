@@ -1,0 +1,578 @@
+/**
+ * AI Advocate — full-panel carousel (JS-driven clock + cursor)
+ */
+
+.advocate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(14px, 3vw, 22px);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.advocate__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  flex-shrink: 0;
+}
+
+.advocate__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-second-2);
+}
+
+.advocate__live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--color-main-default);
+  box-shadow: 0 0 0 3px var(--color-main-tint-sm);
+  animation: advocate-live 1.8s ease-in-out infinite;
+}
+
+.advocate__hours {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-text-second-2);
+}
+
+.advocate__stage {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+}
+
+.advocate-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  will-change: opacity, visibility;
+  transition: opacity 0.2s linear;
+}
+
+.advocate-slide__status {
+  font-size: clamp(11px, 1.4vw, 13px);
+  font-weight: 600;
+  color: var(--color-text-green-dark);
+  background: var(--color-bg-light);
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-chip);
+  white-space: nowrap;
+}
+
+.advocate-card {
+  width: 100%;
+  max-width: 520px;
+  flex: 1;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-float);
+  padding: clamp(14px, 2.5vw, 20px);
+  position: relative;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* ── Email ── */
+.advocate-card--email {
+  display: flex;
+  flex-direction: column;
+}
+
+.advocate-email__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.advocate-email__new {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-default);
+}
+
+.advocate-email__new svg { color: var(--color-text-green-dark); }
+
+.advocate-email__to {
+  font-size: 11px;
+  color: var(--color-text-second);
+}
+
+.advocate-email__label {
+  display: block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-second-2);
+  margin-bottom: 4px;
+}
+
+.advocate-email__field--subject {
+  margin-bottom: var(--space-4);
+}
+
+.advocate-email__line {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--color-text-default);
+  min-height: 1.55em;
+}
+
+.advocate-email__line--body {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-second);
+  min-height: 4.65em;
+}
+
+.advocate-email__caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--color-secondary-text);
+  animation: advocate-caret 0.85s step-end infinite;
+}
+
+.advocate-email__body {
+  flex: 1;
+  min-height: 88px;
+}
+
+.advocate-email__send {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-4);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  background: var(--color-main-default);
+  color: var(--color-text-default);
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.advocate-email__send.is-pressed {
+  transform: scale(0.94);
+  box-shadow: 0 0 0 4px var(--color-main-tint-md);
+}
+
+/* ── Calendar ── */
+.advocate-card--cal {
+  padding-bottom: var(--space-6);
+}
+
+.advocate-cal__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.advocate-cal__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.advocate-cal__title svg { color: var(--color-text-green-dark); }
+
+.advocate-cal__finding {
+  font-size: 11px;
+  color: var(--color-text-second);
+}
+
+.advocate-cal__grid {
+  display: grid;
+  grid-template-columns: 36px repeat(5, 1fr);
+  gap: 3px;
+  font-size: 10px;
+}
+
+.advocate-cal__day {
+  text-align: center;
+  font-weight: 700;
+  color: var(--color-text-second);
+  padding: 4px 0;
+}
+
+.advocate-cal__day.is-today { color: var(--color-text-green-dark); }
+
+.advocate-cal__row { display: contents; }
+
+.advocate-cal__hour {
+  grid-column: 1;
+  color: var(--color-text-second-2);
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 6px;
+}
+
+.advocate-cal__cell {
+  min-height: 28px;
+  border-radius: 6px;
+  background: var(--color-surface-muted);
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.advocate-cal__cell.is-hover {
+  background: var(--color-main-tint-sm);
+  border-color: var(--color-main-alpha-30);
+}
+
+.advocate-cal__cell.is-booked {
+  background: var(--color-main-default);
+  border-color: var(--color-main-default);
+  position: relative;
+  box-shadow: 0 0 0 3px var(--color-main-tint-md);
+}
+
+.advocate-cal__event {
+  position: absolute;
+  inset: 3px;
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--color-text-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ── Pipeline ── */
+.advocate-pipe__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.advocate-pipe__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.advocate-pipe__title svg { color: var(--color-text-green-dark); }
+
+.advocate-pipe__sub {
+  font-size: 11px;
+  color: var(--color-text-second);
+}
+
+.advocate-pipe__board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  min-height: 200px;
+}
+
+.advocate-pipe__col {
+  background: var(--color-bg-light);
+  border-radius: var(--radius-md);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.advocate-pipe__label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-second-2);
+}
+
+.advocate-pipe__job {
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  border: 1px solid var(--color-border-default);
+  box-shadow: var(--shadow-chip);
+  transition: opacity 0.25s ease, transform 0.1s linear, box-shadow 0.15s ease;
+}
+
+.advocate-pipe__job strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.advocate-pipe__job span {
+  font-size: 10px;
+  color: var(--color-text-second);
+}
+
+.advocate-pipe__job--stripe.is-hidden {
+  opacity: 0.2;
+  border-style: dashed;
+}
+
+.advocate-pipe__job--stripe.is-slot {
+  opacity: 0.15;
+  border: 1px dashed var(--color-border-default);
+  background: transparent;
+  min-height: 44px;
+}
+
+.advocate-pipe__job--stripe.is-slot strong,
+.advocate-pipe__job--stripe.is-slot span {
+  opacity: 0;
+}
+
+.advocate-pipe__col--onsite .advocate-pipe__job--stripe.is-placed {
+  border: 2px solid var(--color-main-default);
+  box-shadow: var(--shadow-tab);
+}
+
+.advocate-pipe__job--float {
+  position: absolute;
+  z-index: 8;
+  width: calc(33% - 12px);
+  transform: translate(-20%, -45%);
+  border: 2px solid var(--color-main-default);
+  box-shadow: var(--shadow-tab);
+  pointer-events: none;
+}
+
+/* ── Matches ── */
+.advocate-match__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.advocate-match__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.advocate-match__title svg { color: var(--color-text-green-dark); }
+
+.advocate-match__count {
+  font-size: 11px;
+  color: var(--color-text-second);
+}
+
+.advocate-match__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.advocate-match__row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border-default);
+  transition: background 0.2s ease;
+}
+
+.advocate-match__row:last-child { border-bottom: none; }
+
+.advocate-match__row.is-active {
+  background: var(--color-bg-light);
+  border-radius: var(--radius-sm);
+  margin: 0 calc(-1 * var(--space-2));
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+}
+
+.advocate-match__logo {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--color-main-default);
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.advocate-match__info strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.advocate-match__info span {
+  font-size: 11px;
+  color: var(--color-text-second);
+}
+
+.advocate-match__pct {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-text-green-dark);
+}
+
+.advocate-match__heart {
+  color: var(--color-text-second-2);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.advocate-match__heart.is-saved {
+  color: var(--color-text-green-dark);
+  transform: scale(1.08);
+}
+
+/* ── Cursor — left/top % of card (not transform %) ── */
+.advocate-cursor {
+  position: absolute;
+  z-index: 60;
+  pointer-events: none;
+  margin: 0;
+  will-change: left, top;
+}
+
+.advocate-cursor__ptr {
+  position: relative;
+  z-index: 2;
+  display: block;
+  transform-origin: 1px 1px;
+  filter:
+    drop-shadow(0 1px 0 var(--color-surface))
+    drop-shadow(0 3px 8px var(--color-overlay-12));
+}
+
+.advocate-cursor.is-clicking .advocate-cursor__ptr {
+  transform: scale(0.88);
+}
+
+.advocate-cursor.is-dragging .advocate-cursor__ptr {
+  transform: scale(0.95);
+}
+
+.advocate-cursor.is-clicking .advocate-cursor__ring,
+.advocate-cursor.is-dragging .advocate-cursor__ring {
+  opacity: 1;
+  transform: scale(1.3);
+}
+
+.advocate-cursor__ring {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-main-default);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.1s ease, transform 0.1s ease;
+  z-index: 1;
+}
+
+.advocate-cursor__tip {
+  position: absolute;
+  left: 16px;
+  top: 14px;
+  z-index: 3;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-main-default);
+  color: var(--color-text-default);
+  box-shadow: var(--shadow-tab);
+}
+
+/* Progress dots */
+.advocate__dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: var(--space-5);
+  flex-shrink: 0;
+}
+
+.advocate__dot {
+  width: 28px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-ui-chip-bg);
+  transition: background 0.35s ease, transform 0.35s ease;
+}
+
+.advocate__dot.is-active {
+  background: var(--color-main-default);
+  transform: scaleX(1.08);
+}
+
+@keyframes advocate-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+@keyframes advocate-caret {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@media (max-width: 900px) {
+  .advocate { min-height: 380px; padding: 12px; }
+  .advocate-card { max-width: 100%; }
+  .advocate-pipe__board { min-height: 160px; }
+  .advocate-cal__cell { min-height: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .advocate-slide,
+  .advocate-cursor,
+  .advocate__live-dot,
+  .advocate-email__caret {
+    animation: none !important;
+  }
+}

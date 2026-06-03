@@ -2,6 +2,9 @@
 
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
+import AutoApplyGraphic from './features/AutoApplyGraphic'
+import CareerAgentGraphic from './features/CareerAgentGraphic'
+import ResumeCustomizerGraphic from './features/ResumeCustomizerGraphic'
 
 const LottiePlayer = dynamic(
   () => import('@lottiefiles/react-lottie-player').then(mod => mod.Player),
@@ -31,21 +34,21 @@ const FEATURES: Feature[] = [
     label: 'AI Agent Support',
     title: 'A career advocate that never clocks out',
     body: 'A persistent AI agent that learns your goals, handles recruiter outreach, and manages your entire pipeline — all while you focus on life.',
-    duration: 5000,
+    duration: 18000,
   },
   {
     id: 'resume',
     label: 'AI Resume Customizer',
     title: '100% ATS-optimized, 0% effort',
     body: 'Instantly re-tune your resume for every role. Tailored keywords and perfect formatting — automatically adapted to pass every ATS filter.',
-    duration: 5000,
+    duration: 20000,
   },
   {
     id: 'auto-apply',
     label: 'AI Auto Apply',
     title: '300+ jobs applied while you live your life',
     body: 'Set your criteria once. Our agent automatically applies to matching positions around the clock — no forms, no repetition, no burnout.',
-    duration: 5000,
+    duration: 19500,
   },
 ]
 
@@ -53,6 +56,7 @@ export default function Features() {
   const [active, setActive] = useState(0)
   const [started, setStarted] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+  const activeFeature = FEATURES[active]
 
   // Start animations when section enters viewport
   useEffect(() => {
@@ -175,23 +179,24 @@ export default function Features() {
 
           {/* Right: preview */}
           <div className="features-preview-wrap">
-            {FEATURES.map((f, i) => (
-              <div
-                key={f.id}
-                className={`features-preview${i === active ? ' is-active' : ''}`}
-              >
-                {f.lottie ? (
-                  <LottiePlayer
-                    autoplay
-                    loop
-                    src={f.lottie}
-                    className="features-lottie"
-                  />
-                ) : (
-                  <div className={`features-preview-card features-preview-card--${f.id}`} />
-                )}
-              </div>
-            ))}
+            <div key={activeFeature.id} className="features-preview is-active">
+              {activeFeature.id === 'agent' ? (
+                <CareerAgentGraphic />
+              ) : activeFeature.id === 'resume' ? (
+                <ResumeCustomizerGraphic />
+              ) : activeFeature.id === 'auto-apply' ? (
+                <AutoApplyGraphic />
+              ) : activeFeature.lottie ? (
+                <LottiePlayer
+                  autoplay
+                  loop
+                  src={activeFeature.lottie}
+                  className="features-lottie"
+                />
+              ) : (
+                <div className={`features-preview-card features-preview-card--${activeFeature.id}`} />
+              )}
+            </div>
           </div>
         </div>
       </div>
