@@ -104,18 +104,8 @@ export default function Faq() {
             Got <span className="faq-title__mark">questions?</span> We&apos;ve got answers.
           </h2>
           <p className="faq-lead">
-            Search, browse by topic, or just start scrolling — everything you need to know is here.
+            Browse by topic or scroll the list — everything you need to know is here.
           </p>
-          <label className="faq-search">
-            <Search size={18} aria-hidden="true" />
-            <input
-              type="search"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="Ask anything — try &quot;ATS&quot;, &quot;trial&quot;, &quot;alerts&quot;..."
-              aria-label="Search frequently asked questions"
-            />
-          </label>
         </header>
 
         <div className="faq-filters" role="tablist" aria-label="FAQ categories">
@@ -174,35 +164,48 @@ export default function Faq() {
             )}
           </div>
 
-          <aside className="faq-aside">
-            <span className="faq-aside__live">
-              <span className="faq-aside__live-dot" aria-hidden="true" />
-              Live · avg 4 min reply
-            </span>
-            <h3 className="faq-aside__title">Still curious?</h3>
-            <p className="faq-aside__body">
-              Talk to a real human on our team — no bots, no forms, no wait queues.
-            </p>
-            <a href="mailto:support@jobnova.ai" className="faq-aside__cta">
-              <MessageCircle size={18} aria-hidden="true" />
-              Chat with us
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
-            <div className="faq-aside__stats">
-              <div>
-                <strong>98%</strong>
-                <span>Resolved</span>
+          <div className="faq-sidebar">
+            <aside className="faq-aside">
+              <span className="faq-aside__live">
+                <span className="faq-aside__live-dot" aria-hidden="true" />
+                Live · avg 4 min reply
+              </span>
+              <h3 className="faq-aside__title">Still curious?</h3>
+              <p className="faq-aside__body">
+                Talk to a real human on our team — no bots, no forms, no wait queues.
+              </p>
+              <a href="mailto:support@jobnova.ai" className="faq-aside__cta">
+                <MessageCircle size={18} aria-hidden="true" />
+                Chat with us
+                <ArrowRight size={18} aria-hidden="true" />
+              </a>
+              <div className="faq-aside__stats">
+                <div>
+                  <strong>98%</strong>
+                  <span>Resolved</span>
+                </div>
+                <div>
+                  <strong>4m</strong>
+                  <span>Avg reply</span>
+                </div>
+                <div>
+                  <strong>24/7</strong>
+                  <span>Coverage</span>
+                </div>
               </div>
-              <div>
-                <strong>4m</strong>
-                <span>Avg reply</span>
-              </div>
-              <div>
-                <strong>24/7</strong>
-                <span>Coverage</span>
-              </div>
-            </div>
-          </aside>
+            </aside>
+
+            <label className="faq-search">
+              <Search size={18} aria-hidden="true" />
+              <input
+                type="search"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Search FAQs — ATS, trial, alerts..."
+                aria-label="Search frequently asked questions"
+              />
+            </label>
+          </div>
         </div>
       </div>
     </section>
