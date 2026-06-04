@@ -2,7 +2,13 @@
 
 This repository contains the **JobNova** direct-hire dashboard. The work documented here is a **UI-only redesign** of the marketing landing page, completed as part of a **design challenge**. No backend APIs, auth flows, or job-matching logic were changed—only layout, styling, motion, and front-end presentation.
 
-**Primary commit:** `5d447ed` — `feat(landing): redesign testimonials, FAQ, CTA, and feature previews`
+**Key commits**
+
+| Commit | Description |
+|--------|-------------|
+| `5d447ed` | `feat(landing): redesign testimonials, FAQ, CTA, and feature previews` |
+| `8b4c78a` | `docs: add README for design challenge landing UI changes` |
+| `b6c1432` | `fix(faq): move search below support card in sidebar column` |
 
 ---
 
@@ -19,7 +25,7 @@ The goal was to align key homepage sections with provided high-fidelity mockups:
 | **Features** | Static / Lottie-only previews for some tabs | Scroll-pinned section with three custom **animated workstation** UIs (AI Agent, Resume, Auto Apply) |
 | **Why** | Generic stat cards | Lime icon tiles, fourth stat **`∞`**, updated card styling |
 | **Testimonials** | Three static quote cards in a grid | Interactive **Zoom / Canva / Microsoft** tabs, quote + dark metrics column, logo marquee, global stats row |
-| **FAQ** | Basic list | Badge header, highlighted title, **search**, category chips, accordion + “Still curious?” sidebar |
+| **FAQ** | Basic list | Badge header, highlighted title, category chips, accordion list + sticky **sidebar** (“Still curious?” + search below it) |
 | **CTA** | Simple card: “Stop applying. Start getting hired.” | Full-bleed section: dot grid, glow, **rotating headline** words, floating activity badges, pill CTA with arrow |
 | **Global styles** | Partial section styles | Large `style.css` expansion for new BEM-style class names |
 
@@ -85,15 +91,22 @@ Rebuilt from a 3-column static grid to match the challenge mockups:
 
 ### 4. FAQ — Searchable help center
 
-Full layout redesign:
+Full layout redesign with a clear visual hierarchy:
 
-- Lime **FAQ** badge and title with highlighted “**questions?**”
-- **Search** input filtering questions in real time
-- **Category filters:** All, Getting started, Matching & jobs, Billing, Alerts, Support
-- Numbered **accordion** with “Popular” badges; one item open at a time
-- Dark **“Still curious?”** sidebar with support CTA
+**Top (centered)** — Lime **FAQ** badge, title with highlighted “**questions?**”, and lead copy (“Browse by topic or scroll the list…”). Search is intentionally **not** in the header so the title stays the focal point.
 
-**Files:** `src/components/Faq.tsx` (client component), `.faq-*` in `src/style.css`.  
+**Middle** — **Category filters:** All, Getting started, Matching & jobs, Billing, Alerts, Support.
+
+**Main grid (two columns on desktop)**
+
+| Left | Right (`faq-sidebar`, sticky) |
+|------|--------------------------------|
+| Numbered **accordion** with “Popular” badges; one item open at a time | Dark **“Still curious?”** card (live badge, chat CTA, 98% / 4m / 24/7 stats) |
+| | **Search** bar directly below the card, full width of the sidebar column |
+
+The search input filters questions in real time (by question text and answer body) and respects the active category. On viewports ≤1024px, the layout stacks: accordion first, then the support card, then search.
+
+**Files:** `src/components/Faq.tsx` (client component), `.faq-*` / `.faq-sidebar` in `src/style.css`.  
 **Dependency:** `lucide-react` icons (already in project).
 
 ---
@@ -154,7 +167,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) (or the port Next.js prints). Scroll through **Features**, **Testimonials**, **FAQ**, and the bottom **CTA** to see the challenge UI.
+Open [http://localhost:3000](http://localhost:3000) (or the port Next.js prints). Scroll through **Features**, **Testimonials**, **FAQ** (try the sidebar search and category chips), and the bottom **CTA** to see the challenge UI.
 
 ```bash
 npm run build   # production build
@@ -183,3 +196,5 @@ If this repo is a **fork** of `Liba-Space/direct-hire-dashboard`, pushing to you
 ## Author Notes
 
 This README describes the landing-page UI pass for design-challenge review. For product behavior inside the jobs dashboard (auto-apply modal, subscriptions, etc.), refer to existing app code under `src/app/jobs/` and prior commits on `main`.
+
+**Dev note:** While running `next dev` (especially with Turbopack), you may occasionally see `Router action dispatched before initialization` in the terminal after hot reload. That is a known Next.js dev quirk; a full page refresh usually clears it if the UI otherwise loads with `GET / 200`.
